@@ -1,3 +1,3 @@
 boot:
-	nasm -f bin bootstrap.asm -o bootstrap.bin
-	qemu-system-x86_64 bootstrap.bin
+	nasm -f bin bootloader.asm -o bootloader.bin
+	qemu-system-x86_64 -fda bootloader.bin

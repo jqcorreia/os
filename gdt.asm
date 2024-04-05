@@ -1,5 +1,5 @@
 gdt_start:
-    ; 8 bytes of 0x0
+    ; 8 bytes of 0x0, the null descriptor
     dd 0x0
     dd 0x0
 
@@ -30,11 +30,35 @@ CODE_SEG equ gdt_code - gdt_start
 DATA_SEG equ gdt_data - gdt_start
 
 
+[bits 16]
 switch_protected_mode:
     cli ; disable interrupts
     lgdt [gdt_descriptor]
 
+    mov eax, cr0 ; get control register (we can't set it directly)
+    or eax, 0x1 ; set 1st bit that sets the cpu to 32bit
+    mov cr0, eax ; store it
 
+    ; do a far jump, which means a jump to another segment
+    ; this clears the CPU pipeline in order to make sure we are in 32 bit mode
+    jmp CODE_SEG:init_protected_mode
+
+
+[bits 32]
+init_protected_mode: ; we are now using 32-bit instructions
+    mov ax, DATA_SEG ; 5. update the segment registers
+    mov ds, ax
+    mov ss, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    mov ebp, 0x90000 ; 6. update the stack right at the top of the free space
+    mov esp, ebp
+
+    call BEGIN_PM ; 7. Call a well-known label with useful code
+
+    
 
 
     

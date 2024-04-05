@@ -1,5 +1,5 @@
 [org 0x7c00]
-    mov [bios_disk], dl ; store current disk set from bios
+    mov [bios_disk], dl ; store current disk set from bios in dl register
 
     mov bp, 0x8000 ; set the stack safely away from us
     mov sp, bp
@@ -16,7 +16,6 @@
     mov dx, 0xdead
     call print_hex
     call print_nl
-
     
 ; _loop:
 ;     mov ah, 0x00 
@@ -48,11 +47,21 @@ mov dx, [bx + 512]
 call print_hex
 call print_nl
 
+call switch_protected_mode
 jmp $
 
 %include "utils.asm"
 %include "disk.asm"
 %include "gdt.asm"
+%include "string.asm"
+
+[bits 32]
+BEGIN_PM:
+    mov ebx, MSG_PROTECTED_MODE
+    call print_string_pm
+
+    jmp $
+
 
 bios_disk: db 0x00
 hello: db "Hello, World", 0

@@ -31,10 +31,10 @@ load_kernel:
     call disk_load
     ret
 
-%include "utils.asm"
-%include "disk.asm"
-%include "gdt.asm"
-%include "string.asm"
+%include "boot/utils.asm"
+%include "boot/disk.asm"
+%include "boot/gdt.asm"
+%include "boot/string.asm"
 
 [bits 32]
 BEGIN_PM:

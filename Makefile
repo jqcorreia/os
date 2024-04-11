@@ -32,7 +32,8 @@ kernel.elf: boot/kernel_entry.o ${OBJ}
 
 debug: assemble kernel.elf
 	qemu-system-i386 -s -fda ${DISK_FILE} &
-	${GDB} -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
+	# ${GDB} -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
+	~/src/gdb-frontend/gdbfrontend -G '-ex "target remote localhost:1234" -ex "symbol-file kernel.elf"'
 	# nasm -f bin bootloader.asm -o bootloader.bin # build bootloader
 	# nasm -f elf kernel_entry.asm -o kernel_entry.o # build kernel_entry (note: as ELF)
 	# i686-elf-gcc -ffreestanding -c kernel.c -o kernel.o # build kernel

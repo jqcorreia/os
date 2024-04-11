@@ -20,7 +20,7 @@ int get_cursor_offset() {
   port_byte_out(VGA_CONTROL_REGISTER, 15);
   position += port_byte_in(VGA_DATA_REGISTER);
 
-  return position;
+  return position * 2;
 }
 
 void set_cursor_offset(int offset) {

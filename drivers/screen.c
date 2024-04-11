@@ -2,6 +2,11 @@
 #include "../drivers/ports.h"
 
 int get_offset(int col, int row) { return (row * MAX_COLS + col) * 2; }
+int get_offset_row(int offset) { return (offset / (2 * MAX_COLS)); }
+int get_offset_col(int offset) { return (offset % (2 * MAX_COLS) / 2); }
+/* int get_offset_col(int offset) { */
+/*   return (offset - (get_offset_row(offset) * 2 * MAX_COLS)) / 2; */
+/* } */
 
 int get_cursor_offset() {
   int position;
@@ -35,14 +40,24 @@ int print_char(int col, int row, char ch, char attr) {
     attr = WHITE_ON_BLACK;
   }
 
-  int offset = get_offset(col, row);
-  vga[offset] = ch;
-  vga[offset + 1] = attr;
+  int offset;
+  if (col >= 0 && row >= 0)
+    offset = get_offset(col, row);
+  else
+    offset = get_cursor_offset();
 
-  // Add support for newline
-  set_cursor_offset(offset + 2);
+  if (ch == '\n') {
+    row = get_offset_row(offset);
+    offset = get_offset(0, row + 1);
+  } else {
+    vga[offset] = ch;
+    vga[offset + 1] = attr;
+    offset += 2;
+  }
 
-  return offset + 2;
+  set_cursor_offset(offset);
+
+  return offset;
 }
 
 void clear_screen() {
@@ -52,17 +67,24 @@ void clear_screen() {
     for (int row = 0; row < MAX_ROWS; row++) {
       int idx = get_offset(col, row);
       vga[idx] = ' ';
-      vga[idx + 1] = 0x1F;
+      vga[idx + 1] = 0x0F;
     }
   }
+
+  set_cursor_offset(get_offset(0, 0));
 }
 
 void kprint_at(char *message, int col, int row) {
-  set_cursor_offset(get_offset(col, row));
+  /* set_cursor_offset(get_offset(col, row)); */
   char *ch = message;
+  int offset;
   while (*ch != '\0') {
-    print_char(col++, row++, *ch, 0);
+    offset = print_char(col, row, *ch, 0);
+    row = get_offset_row(offset);
+    col = get_offset_col(offset);
+
+    ch += 1;
   }
 }
 
-void kprint(char *message) {}
+void kprint(char *message) { kprint_at(message, -1, -1); }

@@ -16,4 +16,10 @@ void int_to_ascii(int n, char str[]) {
 
   /* TODO: implement "reverse" */
 }
-int b = 100;
+
+void memory_copy(char *src, char *dst, int len) {
+  int i;
+  for (i = 0; i < len; i++) {
+    *(dst + i) = *(src + i);
+  }
+}

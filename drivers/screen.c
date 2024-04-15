@@ -1,5 +1,6 @@
 #include "../drivers/screen.h"
 #include "../drivers/ports.h"
+#include "../kernel/utils.h"
 
 int get_offset(int col, int row) { return (row * MAX_COLS + col) * 2; }
 int get_offset_row(int offset) { return (offset / (2 * MAX_COLS)); }
@@ -49,10 +50,25 @@ int print_char(int col, int row, char ch, char attr) {
   if (ch == '\n') {
     row = get_offset_row(offset);
     offset = get_offset(0, row + 1);
+
   } else {
     vga[offset] = ch;
     vga[offset + 1] = attr;
     offset += 2;
+  }
+
+  if (get_offset_row(offset) > MAX_ROWS - 1) {
+    memory_copy((void *)VGA_MEMORY_ADDR + MAX_COLS * 2, (void *)VGA_MEMORY_ADDR,
+                MAX_COLS * (MAX_ROWS - 1) * 2);
+
+    char *last_line = vga + ((MAX_ROWS - 1) * MAX_COLS * 2);
+
+    for (int i = 0; i < MAX_COLS; i++) {
+      last_line[i * 2] = 0;
+      last_line[i * 2 + 1] = 0x0F;
+    }
+
+    offset -= 2 * MAX_COLS;
   }
 
   set_cursor_offset(offset);
@@ -67,7 +83,7 @@ void clear_screen() {
     for (int row = 0; row < MAX_ROWS; row++) {
       int idx = get_offset(col, row);
       vga[idx] = ' ';
-      vga[idx + 1] = 0x0F;
+      vga[idx + 1] = 0x1F;
     }
   }
 

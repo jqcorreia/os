@@ -1,9 +1,11 @@
+#include "../cpu/idt.h"
 #include "../drivers/ports.h"
 #include "../drivers/screen.h"
 #include "./utils.h"
 
 void main() {
   clear_screen();
+  init_idt();
   /* kprint("It's me again\n"); */
   /* kprint("It's me again2\n"); */
   /* kprint_at("Hello bitches!\nA Sara e linda!\n", 0, 5); */

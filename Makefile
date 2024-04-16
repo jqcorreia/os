@@ -1,5 +1,5 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h)
 # Nice syntax for file extension replacement
 OBJ = ${C_SOURCES:.c=.o}
 DISK_FILE=disk.bin
@@ -34,14 +34,5 @@ debug: assemble kernel.elf
 	qemu-system-i386 -s -fda ${DISK_FILE} &
 	# ${GDB} -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
 	~/src/gdb-frontend/gdbfrontend -G '-ex "target remote localhost:1234" -ex "symbol-file kernel.elf"'
-	# nasm -f bin bootloader.asm -o bootloader.bin # build bootloader
-	# nasm -f elf kernel_entry.asm -o kernel_entry.o # build kernel_entry (note: as ELF)
-	# i686-elf-gcc -ffreestanding -c kernel.c -o kernel.o # build kernel
-	# # Use linker to resolve extern in kernel_entry.o
-	# i686-elf-ld -o kernel.bin -Ttext 0x1000 kernel.o kernel_entry.o --oformat binary
-	# # Concatenate both bootloader and kernel back to back since we are reading right after the first 512bytes
-	# cat bootloader.bin kernel.bin > disk.bin
-	# # Run 
-	# qemu-system-x86_64 -fda disk.bin
 
 

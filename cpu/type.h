@@ -8,4 +8,7 @@
 #define u8 unsigned char
 #define s8 char
 
+#define low_16(address) (u16)((address) & 0xFFFF)
+#define high_16(address) (u16)(((address) >> 16) & 0xFFFF)
+
 #endif

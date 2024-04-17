@@ -1,2 +1,2 @@
 # os
-Toy Real-mode OS
+Toy Protected Mode OS

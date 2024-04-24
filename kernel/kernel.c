@@ -1,4 +1,5 @@
 #include "../cpu/idt.h"
+#include "../cpu/pic.h"
 #include "../drivers/ports.h"
 #include "../drivers/screen.h"
 #include "../kernel/utils.h"
@@ -23,10 +24,11 @@ int main() {
   /*   kprint(buf); */
   /*   kprint("\n"); */
   /* } */
-  /* __asm__ __volatile__("int $1"); */
+
   __asm__ __volatile__("int $2");
-  /* __asm__ __volatile__("int $2"); */
   __asm__ __volatile__("int $3");
+
+  PIC_remap(0x20, 0x28);
 
   return 0;
 }

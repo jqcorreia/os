@@ -1,6 +1,7 @@
 #include "idt.h"
 #include "../drivers/screen.h"
 #include "../kernel/utils.h"
+#include "type.h"
 
 idt_entry_t idt_entries[256];
 idt_ptr_struct idt_ptr;
@@ -8,13 +9,12 @@ idt_ptr_struct idt_ptr;
 void set_idt_gate(int n, u32 handler) {
   idt_entries[n].always0 = 0;
   idt_entries[n].sel = KERNEL_CS;
-  idt_entries[n].base_lo = (u16)(handler & 0xFFFF);
-  idt_entries[n].base_hi = (u16)((handler >> 16) & 0xFFFF);
-  idt_entries[n].flags = 0b10000110;
+  idt_entries[n].base_lo = low_16(handler);
+  idt_entries[n].base_hi = high_16(handler);
+  idt_entries[n].flags = 0x8E;
 }
 
 void init_idt() {
-
   set_idt_gate(0, (u32)isr0);
   set_idt_gate(1, (u32)isr1);
   set_idt_gate(2, (u32)isr2);
@@ -48,8 +48,8 @@ void init_idt() {
   set_idt_gate(30, (u32)isr30);
   set_idt_gate(31, (u32)isr31);
 
-  idt_ptr.limit = sizeof(idt_entry_t) * 256 - 1;
-  idt_ptr.base = &idt_entries;
+  idt_ptr.base = (u32)&idt_entries;
+  idt_ptr.limit = 256 * sizeof(idt_entry_t) - 1;
   __asm__ __volatile__("lidtl (%0)" : : "r"(&idt_ptr));
 }
 
@@ -57,6 +57,9 @@ void isr_handler(registers_t r) {
   char buf[255];
 
   int_to_ascii(r.int_no, buf);
+  kprint(buf);
+  kprint(" ");
+  int_to_ascii(r.err_code, buf);
   kprint(buf);
   kprint("\n");
   /* char buf[10]; */

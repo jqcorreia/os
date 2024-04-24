@@ -25,7 +25,7 @@ load_kernel:
 
     mov bx, KERNEL_OFFSET 
 
-    ; Load 2 segments of disk 
+    ; Load a buch of segments of disk 
     mov dh, 31
     mov dl, [bios_disk]
     call disk_load

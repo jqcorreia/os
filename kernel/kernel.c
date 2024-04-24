@@ -4,7 +4,7 @@
 #include "../kernel/utils.h"
 
 int main() {
-  clear_screen();
+  /* clear_screen(); */
   init_idt();
   /* kprint("It's me again\n"); */
   /* kprint("It's me again2\n"); */
@@ -23,6 +23,10 @@ int main() {
   /*   kprint(buf); */
   /*   kprint("\n"); */
   /* } */
-  asm("int $10");
+  /* __asm__ __volatile__("int $1"); */
+  __asm__ __volatile__("int $2");
+  /* __asm__ __volatile__("int $2"); */
+  __asm__ __volatile__("int $3");
+
   return 0;
 }

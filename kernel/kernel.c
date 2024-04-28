@@ -1,34 +1,30 @@
 #include "../cpu/idt.h"
-#include "../cpu/pic.h"
 #include "../drivers/ports.h"
 #include "../drivers/screen.h"
 #include "../kernel/utils.h"
 
-int main() {
-  /* clear_screen(); */
-  init_idt();
-  /* kprint("It's me again\n"); */
-  /* kprint("It's me again2\n"); */
-  /* kprint_at("Hello bitches!\nA Sara e linda!\n", 0, 5); */
+void init_timer(u32 freq)
+{
+    /* Get the PIT value: hardware clock at 1193180 Hz */
+    u32 divisor = 1193180 / freq;
+    u8 low = (u8)(divisor & 0xFF);
+    u8 high = (u8)((divisor >> 8) & 0xFF);
+    /* Send the command */
+    port_byte_out(0x43, 0x36); /* Command port */
+    port_byte_out(0x40, low);
+    port_byte_out(0x40, high);
+}
 
-  /* char buf[5]; */
-  /* int_to_ascii(1024, buf); */
+int main()
+{
+    init_idt();
 
-  /* kprint(buf); */
+    __asm__ __volatile__("sti"); // Enable interrupts
+    /* __asm__ __volatile__("int $2"); */
+    /* __asm__ __volatile__("int $3"); */
+    /* __asm__ __volatile__("int $20"); */
 
-  /* kprint_at("Hello bitches!\nA Sara e linda!\n", 0, 24); */
-  /* int foo; */
-  /* for (foo = 0; foo < 25; foo++) { */
-  /*   char buf[4]; */
-  /*   int_to_ascii(foo, buf); */
-  /*   kprint(buf); */
-  /*   kprint("\n"); */
-  /* } */
+    init_timer(3000);
 
-  __asm__ __volatile__("int $2");
-  __asm__ __volatile__("int $3");
-
-  PIC_remap(0x20, 0x28);
-
-  return 0;
+    /* __asm__ __volatile__("int $8"); */
 }

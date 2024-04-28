@@ -24,7 +24,7 @@ assemble: boot/bootloader.bin kernel.bin
 	cat $^ > ${DISK_FILE}
 
 boot: assemble
-	qemu-system-x86_64 -fda ${DISK_FILE}
+	qemu-system-x86_64 -fda ${DISK_FILE} 
 
 # Used for debugging purposes
 kernel.elf: boot/kernel_entry.o ${OBJ}
@@ -32,7 +32,7 @@ kernel.elf: boot/kernel_entry.o ${OBJ}
 
 debug: assemble kernel.elf
 	qemu-system-i386 -s -fda ${DISK_FILE} &
-	# ${GDB} -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
-	~/src/gdb-frontend/gdbfrontend -G '-ex "target remote localhost:1234" -ex "symbol-file kernel.elf"'
+	${GDB} -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
+	# ~/src/gdb-frontend/gdbfrontend -G '-ex "target remote localhost:1234" -ex "symbol-file kernel.elf"'
 
 

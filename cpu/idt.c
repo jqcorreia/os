@@ -1,4 +1,5 @@
 #include "idt.h"
+#include "../cpu/pic.h"
 #include "../drivers/screen.h"
 #include "../kernel/utils.h"
 #include "type.h"
@@ -48,8 +49,29 @@ void init_idt() {
   set_idt_gate(30, (u32)isr30);
   set_idt_gate(31, (u32)isr31);
 
+  PIC_remap(0x20, 0x28);
+
+  // Install the IRQs
+  set_idt_gate(32, (u32)irq0);
+  set_idt_gate(33, (u32)irq1);
+  set_idt_gate(34, (u32)irq2);
+  set_idt_gate(35, (u32)irq3);
+  set_idt_gate(36, (u32)irq4);
+  set_idt_gate(37, (u32)irq5);
+  set_idt_gate(38, (u32)irq6);
+  set_idt_gate(39, (u32)irq7);
+  set_idt_gate(40, (u32)irq8);
+  set_idt_gate(41, (u32)irq9);
+  set_idt_gate(42, (u32)irq10);
+  set_idt_gate(43, (u32)irq11);
+  set_idt_gate(44, (u32)irq12);
+  set_idt_gate(45, (u32)irq13);
+  set_idt_gate(46, (u32)irq14);
+  set_idt_gate(47, (u32)irq15);
+
   idt_ptr.base = (u32)&idt_entries;
   idt_ptr.limit = 256 * sizeof(idt_entry_t) - 1;
+
   __asm__ __volatile__("lidtl (%0)" : : "r"(&idt_ptr));
 }
 
@@ -66,4 +88,24 @@ void isr_handler(registers_t r) {
   /* int_to_ascii(no, buf); */
 
   /* kprint(buf); */
+  if (r.int_no == 13) {
+    asm("hlt");
+  }
+}
+
+void irq_handler(registers_t r) {
+  PIC_sendEOI(r.int_no);
+
+  if (r.int_no == 33) {
+    u8 scancode = port_byte_in(0x60);
+    char buf[255];
+
+    kprint("IRQ ");
+    int_to_ascii(r.int_no, buf);
+    kprint(buf);
+    kprint(" ");
+    int_to_ascii(scancode, buf);
+    kprint(buf);
+    kprint("\n");
+  }
 }

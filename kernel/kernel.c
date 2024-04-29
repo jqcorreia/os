@@ -16,17 +16,22 @@ void init_timer(u32 freq)
     port_byte_out(0x40, high);
 }
 
+void timer_irq_handler(int irq_no)
+{
+    /* kprint("Tick, Tock\n"); */
+}
 int main()
 {
     init_idt();
     setup_keyboard();
+    register_irq_handler(32, timer_irq_handler);
 
     __asm__ __volatile__("sti"); // Enable interrupts
     /* __asm__ __volatile__("int $2"); */
     /* __asm__ __volatile__("int $3"); */
     /* __asm__ __volatile__("int $20"); */
 
-    init_timer(3000);
+    init_timer(1000);
 
     /* __asm__ __volatile__("int $8"); */
 }

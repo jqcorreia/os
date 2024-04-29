@@ -7,42 +7,46 @@
 void keyboard_callback(int irq_no)
 {
     u8 scancode = port_byte_in(KEYBOARD_PORT);
-    /* switch (scancode) { */
+    if (scancode > 0x7f) {
+        // this is almost probably a keyup event
+    }
+    switch (scancode) {
+    case 0x2:
+        kprint("1");
+        break;
+    case 0x3:
+        kprint("2");
+        break;
+    case 0x4:
+        kprint("3");
+        break;
+    case 0x5:
+        kprint("4");
+        break;
+    case 0x6:
+        kprint("5");
+        break;
+    case 0x7:
+        kprint("6");
+        break;
+    case 0x8:
+        kprint("7");
+        break;
+    case 0x9:
+        kprint("8");
+        break;
+    case 0x0A:
+        kprint("9");
+        break;
+    case 0x0B:
+        kprint("0");
+        break;
+    }
     /* case 0x0: */
     /*     kprint("ERROR"); */
     /*     break; */
     /* case 0x1: */
     /*     kprint("ESC"); */
-    /*     break; */
-    /* case 0x2: */
-    /*     kprint("1"); */
-    /*     break; */
-    /* case 0x3: */
-    /*     kprint("2"); */
-    /*     break; */
-    /* case 0x4: */
-    /*     kprint("3"); */
-    /*     break; */
-    /* case 0x5: */
-    /*     kprint("4"); */
-    /*     break; */
-    /* case 0x6: */
-    /*     kprint("5"); */
-    /*     break; */
-    /* case 0x7: */
-    /*     kprint("6"); */
-    /*     break; */
-    /* case 0x8: */
-    /*     kprint("7"); */
-    /*     break; */
-    /* case 0x9: */
-    /*     kprint("8"); */
-    /*     break; */
-    /* case 0x0A: */
-    /*     kprint("9"); */
-    /*     break; */
-    /* case 0x0B: */
-    /*     kprint("0"); */
     /*     break; */
     /* case 0x0C: */
     /*     kprint("-"); */
@@ -194,11 +198,11 @@ void keyboard_callback(int irq_no)
     /*         kprint("Unknown key up"); */
     /*     break; */
     /* } */
-    char buf[255];
+    /* char buf[255]; */
 
-    int_to_ascii(scancode, buf);
-    kprint(buf);
-    kprint("\n");
+    /* int_to_ascii(scancode, buf); */
+    /* kprint(buf); */
+    /* kprint("\n"); */
 }
 
 void setup_keyboard()

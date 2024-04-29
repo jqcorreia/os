@@ -4,208 +4,72 @@
 #include "../drivers/screen.h"
 #include "../kernel/utils.h"
 
+char scancodes_ascii[256];
+
+void setup_qwerty()
+{
+    // Qwerty scancode conversion
+    scancodes_ascii[0x1c] = '\n';
+    scancodes_ascii[0x39] = ' ';
+    scancodes_ascii[0x0e] = ' ';
+
+    scancodes_ascii[0x2] = '1';
+    scancodes_ascii[0x3] = '2';
+    scancodes_ascii[0x4] = '3';
+    scancodes_ascii[0x5] = '4';
+    scancodes_ascii[0x6] = '5';
+    scancodes_ascii[0x7] = '6';
+    scancodes_ascii[0x8] = '7';
+    scancodes_ascii[0x9] = '8';
+    scancodes_ascii[0xA] = '9';
+    scancodes_ascii[0xB] = '0';
+
+    scancodes_ascii[0x10] = 'q';
+    scancodes_ascii[0x11] = 'w';
+    scancodes_ascii[0x12] = 'e';
+    scancodes_ascii[0x13] = 'r';
+    scancodes_ascii[0x14] = 't';
+    scancodes_ascii[0x15] = 'y';
+    scancodes_ascii[0x16] = 'u';
+    scancodes_ascii[0x17] = 'i';
+    scancodes_ascii[0x18] = 'o';
+    scancodes_ascii[0x19] = 'p';
+
+    scancodes_ascii[0x1e] = 'a';
+    scancodes_ascii[0x1f] = 's';
+    scancodes_ascii[0x20] = 'd';
+    scancodes_ascii[0x21] = 'f';
+    scancodes_ascii[0x22] = 'g';
+    scancodes_ascii[0x23] = 'h';
+    scancodes_ascii[0x24] = 'j';
+    scancodes_ascii[0x25] = 'k';
+    scancodes_ascii[0x26] = 'l';
+
+    scancodes_ascii[0x2c] = 'z';
+    scancodes_ascii[0x2d] = 'x';
+    scancodes_ascii[0x2e] = 'c';
+    scancodes_ascii[0x2f] = 'v';
+    scancodes_ascii[0x30] = 'b';
+    scancodes_ascii[0x31] = 'n';
+    scancodes_ascii[0x32] = 'm';
+}
+
 void keyboard_callback(int irq_no)
 {
     u8 scancode = port_byte_in(KEYBOARD_PORT);
-    if (scancode > 0x7f) {
-        // this is almost probably a keyup event
+    if (scancode > 0x7c) {
+        // Keyup, do nothing
     }
-    switch (scancode) {
-    case 0x2:
-        kprint("1");
-        break;
-    case 0x3:
-        kprint("2");
-        break;
-    case 0x4:
-        kprint("3");
-        break;
-    case 0x5:
-        kprint("4");
-        break;
-    case 0x6:
-        kprint("5");
-        break;
-    case 0x7:
-        kprint("6");
-        break;
-    case 0x8:
-        kprint("7");
-        break;
-    case 0x9:
-        kprint("8");
-        break;
-    case 0x0A:
-        kprint("9");
-        break;
-    case 0x0B:
-        kprint("0");
-        break;
+    if (scancodes_ascii[scancode] != 0) {
+        char buf[2];
+        buf[0] = scancodes_ascii[scancode];
+        buf[1] = 0;
+        kprint(buf);
     }
-    /* case 0x0: */
-    /*     kprint("ERROR"); */
-    /*     break; */
-    /* case 0x1: */
-    /*     kprint("ESC"); */
-    /*     break; */
-    /* case 0x0C: */
-    /*     kprint("-"); */
-    /*     break; */
-    /* case 0x0D: */
-    /*     kprint("+"); */
-    /*     break; */
-    /* case 0x0E: */
-    /*     kprint("Backspace"); */
-    /*     break; */
-    /* case 0x0F: */
-    /*     kprint("Tab"); */
-    /*     break; */
-    /* case 0x10: */
-    /*     kprint("Q"); */
-    /*     break; */
-    /* case 0x11: */
-    /*     kprint("W"); */
-    /*     break; */
-    /* case 0x12: */
-    /*     kprint("E"); */
-    /*     break; */
-    /* case 0x13: */
-    /*     kprint("R"); */
-    /*     break; */
-    /* case 0x14: */
-    /*     kprint("T"); */
-    /*     break; */
-    /* case 0x15: */
-    /*     kprint("Y"); */
-    /*     break; */
-    /* case 0x16: */
-    /*     kprint("U"); */
-    /*     break; */
-    /* case 0x17: */
-    /*     kprint("I"); */
-    /*     break; */
-    /* case 0x18: */
-    /*     kprint("O"); */
-    /*     break; */
-    /* case 0x19: */
-    /*     kprint("P"); */
-    /*     break; */
-    /* case 0x1A: */
-    /*     kprint("["); */
-    /*     break; */
-    /* case 0x1B: */
-    /*     kprint("]"); */
-    /*     break; */
-    /* case 0x1C: */
-    /*     kprint("ENTER"); */
-    /*     break; */
-    /* case 0x1D: */
-    /*     kprint("LCtrl"); */
-    /*     break; */
-    /* case 0x1E: */
-    /*     kprint("A"); */
-    /*     break; */
-    /* case 0x1F: */
-    /*     kprint("S"); */
-    /*     break; */
-    /* case 0x20: */
-    /*     kprint("D"); */
-    /*     break; */
-    /* case 0x21: */
-    /*     kprint("F"); */
-    /*     break; */
-    /* case 0x22: */
-    /*     kprint("G"); */
-    /*     break; */
-    /* case 0x23: */
-    /*     kprint("H"); */
-    /*     break; */
-    /* case 0x24: */
-    /*     kprint("J"); */
-    /*     break; */
-    /* case 0x25: */
-    /*     kprint("K"); */
-    /*     break; */
-    /* case 0x26: */
-    /*     kprint("L"); */
-    /*     break; */
-    /* case 0x27: */
-    /*     kprint(";"); */
-    /*     break; */
-    /* case 0x28: */
-    /*     kprint("'"); */
-    /*     break; */
-    /* case 0x29: */
-    /*     kprint("`"); */
-    /*     break; */
-    /* case 0x2A: */
-    /*     kprint("LShift"); */
-    /*     break; */
-    /* case 0x2B: */
-    /*     kprint("\\"); */
-    /*     break; */
-    /* case 0x2C: */
-    /*     kprint("Z"); */
-    /*     break; */
-    /* case 0x2D: */
-    /*     kprint("X"); */
-    /*     break; */
-    /* case 0x2E: */
-    /*     kprint("C"); */
-    /*     break; */
-    /* case 0x2F: */
-    /*     kprint("V"); */
-    /*     break; */
-    /* case 0x30: */
-    /*     kprint("B"); */
-    /*     break; */
-    /* case 0x31: */
-    /*     kprint("N"); */
-    /*     break; */
-    /* case 0x32: */
-    /*     kprint("M"); */
-    /*     break; */
-    /* case 0x33: */
-    /*     kprint(","); */
-    /*     break; */
-    /* case 0x34: */
-    /*     kprint("."); */
-    /*     break; */
-    /* case 0x35: */
-    /*     kprint("/"); */
-    /*     break; */
-    /* case 0x36: */
-    /*     kprint("Rshift"); */
-    /*     break; */
-    /* case 0x37: */
-    /*     kprint("Keypad *"); */
-    /*     break; */
-    /* case 0x38: */
-    /*     kprint("LAlt"); */
-    /*     break; */
-    /* case 0x39: */
-    /*     kprint("Spc"); */
-    /*     break; */
-    /* default: */
-    /*     /1* 'keuyp' event corresponds to the 'keydown' + 0x80 */
-    /*      * it may still be a scancode we haven't implemented yet, or */
-    /*      * maybe a control/escape sequence *1/ */
-    /*     if (scancode <= 0x7f) { */
-    /*         kprint("Unknown key down"); */
-    /*     } else if (scancode <= 0x39 + 0x80) { */
-    /*         kprint("key up "); */
-    /*     } else */
-    /*         kprint("Unknown key up"); */
-    /*     break; */
-    /* } */
-    /* char buf[255]; */
-
-    /* int_to_ascii(scancode, buf); */
-    /* kprint(buf); */
-    /* kprint("\n"); */
 }
 
 void setup_keyboard()
 {
     register_irq_handler(33, keyboard_callback);
+    setup_qwerty();
 }

@@ -6,24 +6,24 @@
 #define KERNEL_CS 0x08
 
 typedef struct {
-  u16 base_lo;
-  u16 sel;
-  u8 always0;
-  u8 flags;
-  u16 base_hi;
+    u16 base_lo;
+    u16 sel;
+    u8 always0;
+    u8 flags;
+    u16 base_hi;
 } __attribute((packed)) idt_entry_t;
 
 typedef struct {
-  u16 limit;
-  u32 base;
+    u16 limit;
+    u32 base;
 } __attribute((packed)) idt_ptr_struct;
 
 /* Struct which aggregates many registers */
 typedef struct {
-  u32 ds;                                     /* Data segment selector */
-  u32 edi, esi, ebp, esp, ebx, edx, ecx, eax; /* Pushed by pusha. */
-  u32 int_no, err_code; /* Interrupt number and error code (if applicable) */
-  u32 eip, cs, eflags, useresp, ss; /* Pushed by the processor automatically */
+    u32 ds; /* Data segment selector */
+    u32 edi, esi, ebp, esp, ebx, edx, ecx, eax; /* Pushed by pusha. */
+    u32 int_no, err_code; /* Interrupt number and error code (if applicable) */
+    u32 eip, cs, eflags, useresp, ss; /* Pushed by the processor automatically */
 } registers_t;
 
 void init_idt();
@@ -80,3 +80,7 @@ extern void irq13();
 extern void irq14();
 extern void irq15();
 #endif
+
+typedef void (*isr_t)(int);
+
+void register_irq_handler(int irq_no, isr_t);

@@ -1,4 +1,5 @@
 #include "../cpu/idt.h"
+#include "../drivers/keyboard.h"
 #include "../drivers/ports.h"
 #include "../drivers/screen.h"
 #include "../kernel/utils.h"
@@ -18,6 +19,7 @@ void init_timer(u32 freq)
 int main()
 {
     init_idt();
+    setup_keyboard();
 
     __asm__ __volatile__("sti"); // Enable interrupts
     /* __asm__ __volatile__("int $2"); */

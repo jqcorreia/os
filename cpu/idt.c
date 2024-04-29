@@ -7,6 +7,8 @@
 idt_entry_t idt_entries[256];
 idt_ptr_struct idt_ptr;
 
+isr_t irq_handlers[256];
+
 void set_idt_gate(int n, u32 handler)
 {
     idt_entries[n].always0 = 0;
@@ -96,20 +98,28 @@ void isr_handler(registers_t r)
     }
 }
 
+void register_irq_handler(int irq_no, isr_t handler)
+{
+    irq_handlers[irq_no] = handler;
+}
+
 void irq_handler(registers_t r)
 {
     PIC_sendEOI(r.int_no);
 
-    if (r.int_no == 33) {
-        u8 scancode = port_byte_in(0x60);
-        char buf[255];
-
-        kprint("IRQ ");
-        int_to_ascii(r.int_no, buf);
-        kprint(buf);
-        kprint(" ");
-        int_to_ascii(scancode, buf);
-        kprint(buf);
-        kprint("\n");
+    if (irq_handlers[r.int_no] != 0) {
+        irq_handlers[r.int_no](r.int_no);
     }
+    /* if (r.int_no == 33) { */
+    /*     u8 scancode = port_byte_in(0x60); */
+    /*     char buf[255]; */
+
+    /*     kprint("IRQ "); */
+    /*     int_to_ascii(r.int_no, buf); */
+    /*     kprint(buf); */
+    /*     kprint(" "); */
+    /*     int_to_ascii(scancode, buf); */
+    /*     kprint(buf); */
+    /*     kprint("\n"); */
+    /* } */
 }

@@ -11,7 +11,7 @@ void setup_qwerty()
     // Qwerty scancode conversion
     scancodes_ascii[0x1c] = '\n';
     scancodes_ascii[0x39] = ' ';
-    /* scancodes_ascii[0x0e] = ' '; */
+    scancodes_ascii[0x0e] = '\b';
 
     scancodes_ascii[0x2] = '1';
     scancodes_ascii[0x3] = '2';

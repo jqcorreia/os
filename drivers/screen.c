@@ -54,6 +54,10 @@ int print_char(int col, int row, char ch, char attr)
         row = get_offset_row(offset);
         offset = get_offset(0, row + 1);
 
+    } else if (ch == '\b') {
+        offset -= 2;
+        vga[offset] = ' ';
+        vga[offset + 1] = attr;
     } else {
         vga[offset] = ch;
         vga[offset + 1] = attr;

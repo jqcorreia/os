@@ -1,6 +1,6 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h)
-# Nice syntax for file extension replacement
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h libc/*.h)
+
 OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o}
 DISK_FILE=disk.bin
 CC=i686-elf-gcc
@@ -24,7 +24,7 @@ assemble: boot/bootloader.bin kernel.bin
 	cat $^ > ${DISK_FILE}
 
 boot: assemble
-	qemu-system-x86_64 -fda ${DISK_FILE} 
+	qemu-system-x86_64 -fda ${DISK_FILE} -serial vc
 
 # Used for debugging purposes
 kernel.elf: boot/kernel_entry.o ${OBJ}

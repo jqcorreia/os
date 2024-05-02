@@ -3,6 +3,7 @@
 #include "../drivers/ports.h"
 #include "../drivers/screen.h"
 #include "../kernel/utils.h"
+#include "../libc/mem.h"
 
 void init_timer(u32 freq)
 {
@@ -27,11 +28,20 @@ int main()
     register_irq_handler(32, timer_irq_handler);
 
     __asm__ __volatile__("sti"); // Enable interrupts
-    /* __asm__ __volatile__("int $2"); */
-    /* __asm__ __volatile__("int $3"); */
-    /* __asm__ __volatile__("int $20"); */
 
     init_timer(1000);
 
-    /* __asm__ __volatile__("int $8"); */
+    u32 page = kmalloc(1000, 1, 0);
+    char buf[256];
+
+    int_to_ascii(page, &buf);
+    kprint(buf);
+    kprint("\n");
+
+    page = kmalloc(1000, 1, 0);
+
+    char buf2[256];
+    int_to_ascii(page, &buf2);
+    kprint(buf2);
+    kprint("\n");
 }

@@ -2,6 +2,7 @@
 #include "../drivers/keyboard.h"
 #include "../drivers/ports.h"
 #include "../drivers/screen.h"
+#include "../drivers/serial.h"
 #include "../kernel/utils.h"
 #include "../libc/mem.h"
 
@@ -21,6 +22,7 @@ void timer_irq_handler(int irq_no)
 {
     /* kprint("Tick, Tock\n"); */
 }
+
 int main()
 {
     init_idt();
@@ -34,14 +36,16 @@ int main()
     u32 page = kmalloc(1000, 1, 0);
     char buf[256];
 
-    int_to_ascii(page, &buf);
+    int_to_ascii(page, buf);
     kprint(buf);
     kprint("\n");
 
     page = kmalloc(1000, 1, 0);
 
     char buf2[256];
-    int_to_ascii(page, &buf2);
+    int_to_ascii(page, buf2);
     kprint(buf2);
     kprint("\n");
+
+    setup_serial();
 }

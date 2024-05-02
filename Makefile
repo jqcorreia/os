@@ -24,7 +24,7 @@ assemble: boot/bootloader.bin kernel.bin
 	cat $^ > ${DISK_FILE}
 
 boot: assemble
-	qemu-system-x86_64 -fda ${DISK_FILE} -serial vc
+	qemu-system-x86_64 -fda ${DISK_FILE} -serial stdio
 
 # Used for debugging purposes
 kernel.elf: boot/kernel_entry.o ${OBJ}

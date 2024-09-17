@@ -1,7 +1,7 @@
 #include "serial.h"
 #include "../drivers/ports.h"
 
-void setup_serial()
+int setup_serial()
 {
     int base_port = PORT_COM1;
     int baud = 9600;
@@ -17,6 +17,22 @@ void setup_serial()
     port_byte_out(base_port + 1, divisor >> 8);
     // Unset DLAB and set 8 data bits, 1 stop bit, no parity. hi byte (0) disable DLAB, lo byte(3) sets 0011 meaning 8N1
     port_byte_out(base_port + 3, 0x03);
+
+    port_byte_out(base_port + 4, 0xC7); // Enable FIFO, clear transmit FIFO and receive FIFO, 14 bytes threshold
+
+    port_byte_out(base_port + 4, 0x0B); // IRQs enabled, RTS/DSR set ????
+    port_byte_out(base_port + 4, 0x1E); // Set in loopback mode, test the serial chip ????
+    port_byte_out(base_port + 0, 0xAE); // Test serial chip (send byte 0xAE and check if serial returns same byte)
+
+    // Check if serial is faulty (i.e: not same byte as sent)
+    if (port_byte_in(base_port + 0) != 0xAE) {
+        return 1;
+    }
+
+    // If serial is not faulty set it in normal operation mode
+    // (not-loopback with IRQs enabled and OUT#1 and OUT#2 bits enabled)
+    port_byte_out(base_port + 4, 0x0F);
+    return 0;
 }
 
 /* static int init_serial() */

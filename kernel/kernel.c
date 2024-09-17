@@ -33,19 +33,14 @@ int main()
 
     init_timer(1000);
 
-    u32 page = kmalloc(1000, 1, 0);
-    char buf[256];
+    if (setup_serial()) {
+        kprint("Serial port setup error");
+        return 1;
+    } else {
+        kprint("Serial port setup success");
+    }
 
-    int_to_ascii(page, buf);
-    kprint(buf);
-    kprint("\n");
+    port_byte_out(PORT_COM1, 'a');
 
-    page = kmalloc(1000, 1, 0);
-
-    char buf2[256];
-    int_to_ascii(page, buf2);
-    kprint(buf2);
-    kprint("\n");
-
-    setup_serial();
+    return 0;
 }
